@@ -76,7 +76,9 @@ Fish.prototype.boundaries = function() {
         this.yspeed += 1;
     }
 };
-
+//have an array of fish and buttons 
+//fish are never executed
+//make a scene object
 var fish1Scene1 = new Fish(200,190,color(random(0,255), random(0,255), random(0,255)),100);
 var fish2Scene1 = new Fish(250,260,color(random(0,255), random(0,255), random(0,255)),70);
 var fish3Scene1 = new Fish(130,240,color(random(0,255), random(0,255), random(0,255)),50);
@@ -86,6 +88,10 @@ var fish4Scene4 = new Fish(105,140,color(random(0,255), random(0,255), random(0,
 var fish5Scene4 = new Fish(105,330,color(random(0,255), random(0,255), random(0,255)),70);
 var fish6Scene4 = new Fish(295,140,color(random(0,255), random(0,255), random(0,255)),60);
 var fish7Scene4 = new Fish(295,330,color(random(0,255), random(0,255), random(0,255)),50);
+var fishArray=[0];
+for(var i = 0; i < 5; i++){
+    fishArray[i] = new Fish(random(0,400),random(0,400),color(random(0,255), random(0,255), random(0,255)),50+random(0,40));
+}
 //Button constructor
 var Button = function(config){
     this.x = config.x || 0;
@@ -98,8 +104,40 @@ var Button = function(config){
     this.xtxtshift = config.xtxtshift ||0;
     this.ytxtshift = config.ytxtshift || 0;
 };
-//Method draws buttons
+//TODO finish the scene classes; store fish and buttons in arrays
 Button.prototype.draw = function() {
+    rect(this.x,this.y,this.width,this.height,20);
+    fill(0, 0, 0);
+    textSize(40);
+    text(this.label,this.x+this.xtxtshift,this.y+this.ytxtshift);
+};
+
+var scene = function(config){
+    this.sceneNumber = config.sceneNumber || 0;
+    this.y = config.y || 0;
+    this.width = config.width || 150;
+    this.height = config.height || 50;
+    this.label = config.label || "Click";
+    this.onClick = config.onClick || function(){};
+    this.color = config.color || fill(250, 250, 250);
+    this.xtxtshift = config.xtxtshift ||0;
+    this.ytxtshift = config.ytxtshift || 0;
+    
+        currentScene = 1;
+    background(0, 255, 255);
+    for(var i = 0;i < fishArray.length;i++){
+        fishArray[i].draw();
+        fishArray[i].move();
+        fishArray[i].boundaries();
+    }
+        fill(255, 255, 255);
+    rect(0,70,399,35);
+    fill(0, 0, 0);
+    textSize(35);
+    text("Welcome to Fish World",25,100);
+};
+//Method draws buttons
+scene.prototype.draw = function() {
     rect(this.x,this.y,this.width,this.height,20);
     fill(0, 0, 0);
     textSize(40);
@@ -119,10 +157,7 @@ Button.prototype.handleMouseClick = function() {
     }
 };
 //Draws initial button fish
-var fishArray=[0];
-for(var i = 0; i < 5; i++){
-    fishArray[i] = new Fish(random(0,400),random(0,400),color(random(0,255), random(0,255), random(0,255)),50+random(0,40));
-}
+
 var welcomeScreen = function(){
     currentScene = 1;
     background(0, 255, 255);
@@ -419,8 +454,8 @@ draw = function(){
         
     }
 };
-//welcomeScreen();
+welcomeScreen();
 //storeScene();
-fishSelectionScene();
+//fishSelectionScene();
 //promptScene();
 

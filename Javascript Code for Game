@@ -2,12 +2,12 @@
 //Program that lets you buy fish and bring them home
 
 //Todos: 
-// -Make the buttons work properly -> find a way to close buttons for different scenes
 // -make a food scene screen
 // -make a bank screen
 // -Create a money bag for user
-// -make prompt screen for buying fish
 // -make a tutorial
+// -fix propmt scene buttons
+// -finish scene object
 //Additional Features to add: 1. Money Bank with interest 2.Wallet with money to buy fish and food for fish 3.buttons in fishtank to feed(drops food where ever clicked),sell(hover over selected fish and sell),breed(hover over fish and click, egg drops), make a timer on the side to keep track of time,4. Makes screens for food and bank and junk
 
 
@@ -84,12 +84,14 @@ var fish2Scene1 = new Fish(250,260,color(random(0,255), random(0,255), random(0,
 var fish3Scene1 = new Fish(130,240,color(random(0,255), random(0,255), random(0,255)),50);
 
 //Fish in the fish menu
-var fish4Scene4 = new Fish(105,140,color(random(0,255), random(0,255), random(0,255)),80);
-var fish5Scene4 = new Fish(105,330,color(random(0,255), random(0,255), random(0,255)),70);
-var fish6Scene4 = new Fish(295,140,color(random(0,255), random(0,255), random(0,255)),60);
-var fish7Scene4 = new Fish(295,330,color(random(0,255), random(0,255), random(0,255)),50);
-var fishArray=[0];
+var fish4Scene4 = new Fish(105,140,color(204, 202, 204),50);
+var fish5Scene4 = new Fish(105,330,color(168, 255, 171),60);
+var fish6Scene4 = new Fish(295,140,color(240, 105, 105),60);
+var fish7Scene4 = new Fish(295,330,color(226, 255, 5),80);
+var fishSelectionSceneFishArray = [fish4Scene4,fish5Scene4,fish6Scene4,fish7Scene4];
+
 var buttonArray =[];
+var fishArray=[0];//for welcomescreen fish
 for(var i = 0; i < 5; i++){
     fishArray[i] = new Fish(random(0,400),random(0,400),color(random(0,255), random(0,255), random(0,255)),50+random(0,40));
 }
@@ -105,14 +107,14 @@ var Button = function(config){
     this.xtxtshift = config.xtxtshift ||0;
     this.ytxtshift = config.ytxtshift || 0;
 };
-//TODO finish the scene classes; store fish and buttons in arrays
+
 Button.prototype.draw = function() {
     rect(this.x,this.y,this.width,this.height,20);
     fill(0, 0, 0);
     textSize(40);
     text(this.label,this.x+this.xtxtshift,this.y+this.ytxtshift);
 };
-
+//TODO finish the scene classes; store fish and buttons in arrays
 var scene = function(config){
     this.sceneNumber = config.sceneNumber || 0;
     this.color = config.color || background(0, 255, 255);
@@ -120,9 +122,11 @@ var scene = function(config){
     this.textHeight = config.textHeight || 20;
     this.textWidth = config.textWidth || 20;
     this.textSize = config.textSize || 10;
-    this.buttonArray = buttonArray || 21;
+    this.buttonArray = buttonArray || 0;
+    this.fishArray = config.fishArray || 0;
+    
     this.onClick = config.onClick || function(){};
-    this.xtxtshift = config.xtxtshift ||0;
+
     this.ytxtshift = config.ytxtshift || 0;
     
         currentScene = 1;
@@ -421,14 +425,25 @@ var homeFromHomeScreen = new Button({
 });
 //
 mouseClicked = function() {
-    storeFromHomeScreen.handleMouseClick();
-    homeFromHomeScreen.handleMouseClick();
-    fishButton.handleMouseClick();
-    backFromStore.handleMouseClick();
-    storeFromHomeScreen.handleMouseClick();
-    foodFromStore.handleMouseClick();
-    storeFromTank.handleMouseClick();
-    fish1TopLeftPriceLabel.handleMouseClick();
+    if(currentScene === 1){//homescreen
+        storeFromHomeScreen.handleMouseClick();
+        homeFromHomeScreen.handleMouseClick();
+    }else if(currentScene === 2){//Store
+        backFromStore.handleMouseClick();
+        fishButton.handleMouseClick();
+        foodFromStore.handleMouseClick();
+    }else if(currentScene === 3){//fishtank
+        storeFromTank.handleMouseClick();
+
+    }else if(currentScene === 4){
+        fish1TopLeftPriceLabel.handleMouseClick();
+    }else if (currentScene === 4){
+        
+    }
+
+    
+    
+    
 };
 //runs whole program
 draw = function(){

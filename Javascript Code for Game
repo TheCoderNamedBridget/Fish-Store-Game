@@ -2,19 +2,23 @@
 //Program that lets you buy fish and bring them home
 
 //Todos: 
+// -Finish Yes button
+// -make "prettier" fish/new kinds of fish
+// -drop fish into tank function
+// -If fish is hovered over a stats menu pops up for the fish(resell rate,hatch time) there will be a buy button at the bottom
 // -make a food scene screen
 // -make a bank screen
-// -Create a money bag for user
+// -Create a money bag for user -> add functionality
 // -make a tutorial
 // -fix propmt scene buttons
 // -finish scene object
 //Additional Features to add: 1. Money Bank with interest 2.Wallet with money to buy fish and food for fish 3.buttons in fishtank to feed(drops food where ever clicked),sell(hover over selected fish and sell),breed(hover over fish and click, egg drops), make a timer on the side to keep track of time,4. Makes screens for food and bank and junk
 
-
 //Other Projects: Cabbage stand-> a man who sells cabbages to customers -> plants cabbages -> picks cabbages -> sells cabbages -> cabbage sales depend on the season -> different seasons produce more cabbages
 var buffer = 65;
 var currentScene;
-var money = 0;
+var money = 50;
+var yesOrNo = "yes";
 var drawWallet = function(){
     var x = 250;
     var y = 330;
@@ -26,6 +30,7 @@ var drawWallet = function(){
 };
 //Fish constructor method
 var Fish = function(xpos,ypos,color,fishbody) {
+    
     this.xpos = xpos;
     this.ypos = ypos;
     this.color = color;
@@ -34,6 +39,9 @@ var Fish = function(xpos,ypos,color,fishbody) {
     this.yspeed = random(-4,4);
     this.tail = 0;
     this.tailspeed = 1;
+    // this.cost = cost|| 0;
+    // this.resalePrice = resalePrice || 0;
+    // this.growthTime = growthTime || 0;
 };
 //Method draws fish
 Fish.prototype.draw = function() {
@@ -76,21 +84,15 @@ Fish.prototype.boundaries = function() {
         this.yspeed += 1;
     }
 };
-//have an array of fish and buttons 
-//fish are never executed
+//make an array of buttons 
 //make a scene object
-var fish1Scene1 = new Fish(200,190,color(random(0,255), random(0,255), random(0,255)),100);
-var fish2Scene1 = new Fish(250,260,color(random(0,255), random(0,255), random(0,255)),70);
-var fish3Scene1 = new Fish(130,240,color(random(0,255), random(0,255), random(0,255)),50);
-
 //Fish in the fish menu
-var fish4Scene4 = new Fish(105,140,color(204, 202, 204),50);
-var fish5Scene4 = new Fish(105,330,color(168, 255, 171),60);
-var fish6Scene4 = new Fish(295,140,color(240, 105, 105),60);
-var fish7Scene4 = new Fish(295,330,color(226, 255, 5),80);
-var fishSelectionSceneFishArray = [fish4Scene4,fish5Scene4,fish6Scene4,fish7Scene4];
-
-var buttonArray =[];
+var fish1Scene4 = new Fish(105,140,color(204, 202, 204),50);
+var fish2Scene4 = new Fish(105,330,color(168, 255, 171),60);
+var fish3Scene4 = new Fish(295,140,color(240, 105, 105),60);
+var fish4Scene4 = new Fish(295,330,color(226, 255, 5),80);
+var fishSelectionSceneFishArray = [fish1Scene4,fish2Scene4,fish3Scene4,fish4Scene4];
+//adds fish that are in the welcome screen
 var fishArray=[0];//for welcomescreen fish
 for(var i = 0; i < 5; i++){
     fishArray[i] = new Fish(random(0,400),random(0,400),color(random(0,255), random(0,255), random(0,255)),50+random(0,40));
@@ -107,48 +109,14 @@ var Button = function(config){
     this.xtxtshift = config.xtxtshift ||0;
     this.ytxtshift = config.ytxtshift || 0;
 };
-
+//draws buttons
 Button.prototype.draw = function() {
     rect(this.x,this.y,this.width,this.height,20);
     fill(0, 0, 0);
     textSize(40);
     text(this.label,this.x+this.xtxtshift,this.y+this.ytxtshift);
 };
-//TODO finish the scene classes; store fish and buttons in arrays
-var scene = function(config){
-    this.sceneNumber = config.sceneNumber || 0;
-    this.color = config.color || background(0, 255, 255);
-    this.text = config.text || "NO TEXT";
-    this.textHeight = config.textHeight || 20;
-    this.textWidth = config.textWidth || 20;
-    this.textSize = config.textSize || 10;
-    this.buttonArray = buttonArray || 0;
-    this.fishArray = config.fishArray || 0;
-    
-    this.onClick = config.onClick || function(){};
-
-    this.ytxtshift = config.ytxtshift || 0;
-    
-        currentScene = 1;
-    background(0, 255, 255);
-    for(var i = 0;i < fishArray.length;i++){
-        fishArray[i].draw();
-        fishArray[i].move();
-        fishArray[i].boundaries();
-    }
-        fill(255, 255, 255);
-    rect(0,70,399,35);
-    fill(0, 0, 0);
-    textSize(35);
-    text("Welcome to Fish World",25,100);
-};
 //Method draws buttons
-scene.prototype.draw = function() {
-    rect(this.x,this.y,this.width,this.height,20);
-    fill(0, 0, 0);
-    textSize(40);
-    text(this.label,this.x+this.xtxtshift,this.y+this.ytxtshift);
-};
 //method checks if mouse is in the button
 Button.prototype.isMouseInside = function() {
     return mouseX > this.x &&
@@ -162,8 +130,7 @@ Button.prototype.handleMouseClick = function() {
         this.onClick();
     }
 };
-//Draws initial button fish
-
+//Welcome Screen
 var welcomeScreen = function(){
     currentScene = 1;
     background(0, 255, 255);
@@ -182,7 +149,66 @@ var welcomeScreen = function(){
 //Takes bought fish and puts fish in the fishtank
 var functionPlaceFish = function(){
 };
-//After a fish is clicked on in menu a stats menu pops up for the fish(resell rate,hatch time) there will be a buy button at the bottom
+//checks that the user trully wants to fish they are buying
+var promptScene = function(){
+    currentScene = 5;
+    background(255, 255, 255);
+    var x = 20;
+    var y = 30;
+    var buffer = 35;
+    textSize(50);
+    fill(255, 255, 255);
+    rect(0,30,399,185);
+    fill(0, 0, 0);
+    text("Do you really want to buy this fish?", 40, 50, 400, 100);
+    text("want to buy this fish?", 25, 100, 400, 100);
+    text("this fish?", 100, 150, 400, 100);
+
+};
+//Draws fish tank
+var homeFishTankScene = function(){
+    currentScene = 3;
+    strokeWeight(5);
+    background(164, 242, 245);
+    fill(110, 82, 10);
+    rect(0,300,width,100);
+    fill(0, 255, 51);
+    ellipse(60,290,10,100);
+    ellipse(80,270,10,150);
+    ellipse(100,290,10,100);
+
+};
+//draws the initial scene with fish
+var fishSelectionScene = function(){
+    currentScene = 4;
+    background(255, 20, 255);
+};
+//draws store
+var storeScene = function(){
+    currentScene = 2;
+    background(181, 177, 181);
+    fill(181, 95, 2);
+    for(var i = 0; i < 2;i++){
+        rect(10+250*i,30,130,190,20);
+    }
+    fill(0, 51, 255);
+    ellipse(200,250,100,150);
+    fill(214, 187, 81);
+    ellipse(200,150,90,100);
+    fill(0, 0, 0);
+    for(var v = 0;v < 2;v++){
+    ellipse(180+40*v,150,20,15);
+    }
+    fill(158, 86, 3);
+    rect(0,300,width,100);
+    fill(255, 255, 255);
+    drawWallet();
+    fill(255, 255, 255);
+};
+//Unused scene
+var Scene5 = function(){
+};
+
 //1.if not enough money say "You cannot afford this fish"
 var yesBuyFish = new Button({
     x : 225,
@@ -191,42 +217,25 @@ var yesBuyFish = new Button({
     height : 50,
     label : "YES",
     onClick : function(){
+        homeFishTankScene();
     },
     xtxtshift : 15,
     ytxtshift : 40,
 });
-var NoBuyFish = new Button({
+var noBuyFish = new Button({
     x : 25,
     y: 280,
     width : 110,
     height : 50,
     label : " NO",
     onClick : function(){
+        storeScene();
     },
     xtxtshift : 15,
     ytxtshift : 40,
 });
-//checks that the user trully wants to fish they are buying
-var promptScene = function(){
-    currentScene = 5;
-    background(255, 255, 255);
-    var x = 20;
-    var y = 30;
-    var buffer = 35;
-    fill(255, 255, 255);
-    yesBuyFish.draw();
-    fill(255, 255, 255);
-    NoBuyFish.draw();
-    textSize(50);
-    fill(255, 255, 255);
-    rect(0,30,399,185);
-    fill(0, 0, 0);
-    text("Do you really want to buy this fish?", 40, 50, 400, 100);
-    text("want to buy this fish?", 25, 100, 400, 100);
-    text("this fish?", 100, 150, 400, 100);
-};
 var fish1TopLeftPriceLabel = new Button({//promptScene = 6
-    
+
     x : 15,
     y: 10,
     width : 180,
@@ -273,25 +282,6 @@ var fishtankButton = new Button({
     xtxtshift : 15,
     ytxtshift : 40,
 });
-//draws the initial scene with fish
-var fishSelectionScene = function(){
-    currentScene = 4;
-    background(255, 20, 255);
-    fill(255, 255, 255);
-    fish1TopLeftPriceLabel.draw();
-    fill(255, 255, 255);
-    btn9.draw();
-    fill(255, 255, 255);
-    storeButton.draw();
-    fill(255, 255, 255);
-    fishtankButton.draw();
-
-    fish4Scene4.draw();
-    fish5Scene4.draw();
-    fish6Scene4.draw();
-    fish7Scene4.draw();
-    
-};
 //goes back to the fish option
 var fishButton = new Button({
     x : 20,
@@ -313,11 +303,11 @@ var backFromStore = new Button({
     height : 50,
     label : "Back",
     onClick : function(){
-        welcomeScreen();
-    },
+    welcomeScreen();
+     },
     xtxtshift : 15,
-    ytxtshift : 40,
-});
+     ytxtshift : 40,
+ });
 //goes nowhere yet
 var foodFromStore = new Button({
     x : 20,
@@ -343,59 +333,20 @@ var btn6 = new Button({
     },
     xtxtshift : 10,
     ytxtshift : 45,
-});
-//draws store
-var storeScene = function(){
-    currentScene = 2;
-    background(181, 177, 181);
-    fill(181, 95, 2);
-    for(var i = 0; i < 2;i++){
-        rect(10+250*i,30,130,190,20);
-    }
-    fill(0, 51, 255);
-    ellipse(200,250,100,150);
-    fill(214, 187, 81);
-    ellipse(200,150,90,100);
-    fill(0, 0, 0);
-    for(var v = 0;v < 2;v++){
-    ellipse(180+40*v,150,20,15);
-    }
-    fill(158, 86, 3);
-    rect(0,300,width,100);
-    fill(255, 255, 255);
-    drawWallet();
-    fill(255, 255, 255);
-};
+ });
 //button in tank
 var storeFromTank = new Button({
-    x : 30,
-    y : 300,
+    x : 270,
+    y : 340,
     width : 120,
     height : 50,
     label : "Store",
     onClick : function(){
-        storeScene();
+       storeScene();
     },
     xtxtshift : 10,
     ytxtshift : 40,
 });
-var Scene5 = function(){
-};
-//Draws fish tank
-var homeFishTankScene = function(){
-    currentScene = 3;
-    strokeWeight(5);
-    background(164, 242, 245);
-    fill(110, 82, 10);
-    rect(0,300,width,100);
-    fill(0, 255, 51);
-    ellipse(60,290,10,100);
-    ellipse(80,270,10,150);
-    ellipse(100,290,10,100);
-    fill(255, 255, 255);
-    //storeFromTank.draw();
-};
-
 //takes you to the store
 var storeFromHomeScreen = new Button({
     x : 30,
@@ -405,11 +356,10 @@ var storeFromHomeScreen = new Button({
     label : "Store",
     onClick : function(){
         storeScene();
-    },
-    xtxtshift : 10,
+     },
+   xtxtshift : 10,
     ytxtshift : 40,
 });
-
 //goes to fishtank
 var homeFromHomeScreen = new Button({
     x : 250,
@@ -423,7 +373,7 @@ var homeFromHomeScreen = new Button({
     xtxtshift : 10,
     ytxtshift : 40,
 });
-//
+
 mouseClicked = function() {
     if(currentScene === 1){//homescreen
         storeFromHomeScreen.handleMouseClick();
@@ -434,45 +384,60 @@ mouseClicked = function() {
         foodFromStore.handleMouseClick();
     }else if(currentScene === 3){//fishtank
         storeFromTank.handleMouseClick();
-
     }else if(currentScene === 4){
         fish1TopLeftPriceLabel.handleMouseClick();
-    }else if (currentScene === 4){
-        
-    }
-
-    
-    
-    
+    }else if (currentScene === 5){
+        yesBuyFish.handleMouseClick();
+        noBuyFish.handleMouseClick();
+ }
 };
-//runs whole program
+// //runs whole program
 draw = function(){
-    if(currentScene === 1){//homescreen
-        welcomeScreen();
-        fill(255, 255, 255);
-        storeFromHomeScreen.draw();
-        fill(255, 255, 255);
-        homeFromHomeScreen.draw();
-    }else if(currentScene === 2){//Store
-        storeScene();
-        fishButton.draw();
-        fill(255, 8, 8);
-        backFromStore.draw();
-        fill(255, 255, 255);
-        foodFromStore.draw();
-        fill(255, 255, 255);
-        btn6.draw();
-    }else if(currentScene === 3){//fishtank
-        homeFishTankScene();
+  if(currentScene === 1){//homescreen
+    welcomeScreen();
+    fill(255, 255, 255);
+    storeFromHomeScreen.draw();
+    fill(255, 255, 255);
+    homeFromHomeScreen.draw();
+}else if(currentScene === 2){//Store
+   storeScene();
+   fishButton.draw();
+   fill(255, 8, 8);
+   backFromStore.draw();
+   fill(255, 255, 255);
+   foodFromStore.draw();
+   fill(255, 255, 255);
+   btn6.draw();
+}else if(currentScene === 3){//fishtank
+   homeFishTankScene();
+   fill(255, 255, 255);
+   storeFromTank.draw();
+}else if(currentScene === 4){
+   fishSelectionScene();
+   fill(255, 255, 255);
+   fish1TopLeftPriceLabel.draw();
+   fill(255, 255, 255);
+   btn9.draw();
+   fill(255, 255, 255);
+   storeButton.draw();
+   fill(255, 255, 255);
+   fishtankButton.draw();
+   fish1Scene4.draw();
+   fish2Scene4.draw();
+   fish3Scene4.draw();
+   fish4Scene4.draw();
+}else if (currentScene === 5){
+   promptScene();
+   fill(255, 255, 255);
+   yesBuyFish.draw();
+   fill(255, 255, 255);
+   noBuyFish.draw();
 
-    }else if(currentScene === 4){
-        fishSelectionScene();
-    }else if (currentScene === 4){
-        
-    }
+}
 };
 welcomeScreen();
 //storeScene();
 //fishSelectionScene();
 //promptScene();
+//homeFishTankScene();
 

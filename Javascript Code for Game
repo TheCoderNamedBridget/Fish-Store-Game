@@ -89,6 +89,7 @@ var fish5Scene4 = new Fish(105,330,color(random(0,255), random(0,255), random(0,
 var fish6Scene4 = new Fish(295,140,color(random(0,255), random(0,255), random(0,255)),60);
 var fish7Scene4 = new Fish(295,330,color(random(0,255), random(0,255), random(0,255)),50);
 var fishArray=[0];
+var buttonArray =[];
 for(var i = 0; i < 5; i++){
     fishArray[i] = new Fish(random(0,400),random(0,400),color(random(0,255), random(0,255), random(0,255)),50+random(0,40));
 }
@@ -114,12 +115,13 @@ Button.prototype.draw = function() {
 
 var scene = function(config){
     this.sceneNumber = config.sceneNumber || 0;
-    this.y = config.y || 0;
-    this.width = config.width || 150;
-    this.height = config.height || 50;
-    this.label = config.label || "Click";
+    this.color = config.color || background(0, 255, 255);
+    this.text = config.text || "NO TEXT";
+    this.textHeight = config.textHeight || 20;
+    this.textWidth = config.textWidth || 20;
+    this.textSize = config.textSize || 10;
+    this.buttonArray = buttonArray || 21;
     this.onClick = config.onClick || function(){};
-    this.color = config.color || fill(250, 250, 250);
     this.xtxtshift = config.xtxtshift ||0;
     this.ytxtshift = config.ytxtshift || 0;
     
